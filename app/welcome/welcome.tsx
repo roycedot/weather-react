@@ -5,5 +5,4 @@ export function Welcome() {
     return (<Container className="flex">
         <ResponsiveAppBar/>
     </Container>);
-    // return (<div>Hello world</div>);
 }
