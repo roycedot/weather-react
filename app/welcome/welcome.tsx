@@ -9,36 +9,20 @@ const cardsDetails: CardDetails[] = [
         conditions: "Clear",
         temp: 54.5,
         winds: "10mph",
-        rain: "No rain"
+        rain: "No rain",
+        icon: "cloudy",
+        dateStr: "2025-03-14 04:00",
+        tzoffset: -4,
     },
     {
         conditions: "Rainy",
         temp: 50.5,
         winds: "8mph",
-        rain: "No rain"
+        rain: "No rain",
+        icon: "cloudy",
+        dateStr: "2025-03-21 04:00",
+        tzoffset: -4,
     },
-    {
-        conditions: "Snow",
-        temp: 32.5,
-        winds: "8mph",
-        rain: "No rain"
-    },
-    {
-        conditions: "Windy",
-        temp: 52.5,
-        winds: "8mph",
-        rain: "No rain"
-    },
-    {
-        conditions: "Partly Cloudy",
-        temp: 56,
-        winds: "8mph",
-        rain: "No rain"
-    },
-    // {
-    //     conditions: "Partly Cloudy",
-    //     temp: 60
-    // },
 ]
 
 export function Welcome() {

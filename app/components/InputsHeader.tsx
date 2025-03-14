@@ -1,6 +1,7 @@
 import {Box, MenuItem, Select, type SelectChangeEvent, TextField} from "@mui/material";
 import {LocationOn as MapRoundedIcon, Schedule as ScheduleIcon} from '@mui/icons-material'
 import {useState} from "react";
+import {TIMES_OF_DAYS} from "~/constants";
 
 export function InputsHeader() {
     const [location, setLocation] = useState<string>("New York, NY")
@@ -56,9 +57,9 @@ export function InputsHeader() {
                         width: "150px"
                     }}
                 >
-                    <MenuItem value={0}>Morning</MenuItem>
-                    <MenuItem value={1}>Afternoon</MenuItem>
-                    <MenuItem value={2}>Evening</MenuItem>
+                    {
+                        TIMES_OF_DAYS.map((x, idx) => <MenuItem value={idx}>{x.name}</MenuItem>)
+                    }
                 </Select>
             </Box>
         </Box>
