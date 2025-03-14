@@ -6,6 +6,7 @@ import {WeatherCard} from "~/components/WeatherCard";
 export function Carousel({cardsPerPage, cardsDetails}: {cardsPerPage: number, cardsDetails: CardDetails[]}) {
     const [cards, setCards] = useState<React.ReactElement[]>([])
     const [index, setIndex] = useState(0)
+    const [totalPages, setTotalPages] = useState(0)
     const [slideDirection, setSlideDirection] = useState<"right" | "left" | undefined>("left")
 
     const onNextPageClick = () => {
@@ -23,10 +24,12 @@ export function Carousel({cardsPerPage, cardsDetails}: {cardsPerPage: number, ca
     }
 
     useEffect(() => {
-        setCards(cardsDetails.map(x => <WeatherCard
+        const newCards = cardsDetails.map(x => <WeatherCard
             conditions={x.conditions}
             temp={x.temp}
-        />));
+        />)
+        setCards(newCards);
+        setTotalPages(Math.ceil((newCards?.length || 0) / cardsPerPage))
     }, [cardsDetails])
 
     return (
@@ -37,15 +40,17 @@ export function Carousel({cardsPerPage, cardsDetails}: {cardsPerPage: number, ca
                 alignItems: "center",
                 alignContent: "center",
                 justifyContent: "center",
-                height: "400px"
+                width: "100%",
+                height: "400px",
+                overflow: "hidden",
             }}
         >
-            <IconButton onClick={onPrevPageClick} sx={{margin: 5}} disabled={index === 0}>
+            <IconButton onClick={onPrevPageClick} sx={{padding: 5, width: "10%"}} disabled={index === 0}>
                 <NavigateBeforeIcon/>
             </IconButton>
             <Box
                 sx={{
-                    width: "100%",
+                    width: "80%",
                     height: "100%",
                     display: 'flex',
                     flexDirection: "row",
@@ -56,17 +61,21 @@ export function Carousel({cardsPerPage, cardsDetails}: {cardsPerPage: number, ca
                     flexWrap: "nowrap",
                 }}
             >
+                {[...Array(totalPages)].map((el, i) => (
+                    <Box key={i} sx={{height: "100%", display: index === i ? "block": "hidden", alignItems: "center", alignContent: "center", justifyContent: "center"}}>
+                        <Slide direction={slideDirection} in={i === index} mountOnEnter unmountOnExit>
+                            <Stack spacing={2} direction={"row"} alignContent={"center"} justifyContent={"center"}>
+                                {cards.slice(
+                                    i * cardsPerPage,
+                                    i * cardsPerPage + cardsPerPage,
+                                )}
+                            </Stack>
+                        </Slide>
+                    </Box>
+                ))}
             </Box>
-            <Slide direction={slideDirection} in={true} mountOnEnter unmountOnExit>
-                <Stack spacing={2} sx={{width: "100%"}}>
-                    {cards.map((card, i) => (
-                        <Box key={i} sx={{width: "100%"}}>
-                            {card}
-                        </Box>
-                    ))}
-                </Stack>
-            </Slide>
-            <IconButton onClick={onNextPageClick} sx={{margin: 5}} disabled={index >= Math.ceil((cards?.length || 0) / cardsPerPage) - 1}>
+
+            <IconButton onClick={onNextPageClick} sx={{padding: 5, width: "10%"}} disabled={index >= totalPages - 1}>
                 <NavigateNextIcon/>
             </IconButton>
         </Box>

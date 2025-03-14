@@ -2,7 +2,7 @@ import {Container} from "@mui/material";
 import {ResponsiveAppBar} from "../components/ResponsiveAppBar";
 import {Carousel} from "~/components/Carousel";
 
-const cardsPerPage = 4
+const cardsPerPage = 2
 const cardsDetails: CardDetails[] = [
     {
         conditions: "Clear",
@@ -24,10 +24,10 @@ const cardsDetails: CardDetails[] = [
         conditions: "Partly Cloudy",
         temp: 56
     },
-    {
-        conditions: "Partly Cloudy",
-        temp: 60
-    },
+    // {
+    //     conditions: "Partly Cloudy",
+    //     temp: 60
+    // },
 ]
 
 export function Welcome() {
