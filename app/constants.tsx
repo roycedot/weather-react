@@ -3,6 +3,8 @@ import TimeOfDay from "~/TimeOfDay";
 export const CARD_WIDTH = 425
 export const CARD_HEIGHT = 700
 
+export const DEFAULT_CITY = "New York, NY"
+
 export const DAYS_OF_WEEK = [
     "Sunday",
     "Monday",

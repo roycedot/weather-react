@@ -3,18 +3,19 @@ import {ResponsiveAppBar} from "~/components/ResponsiveAppBar";
 import {Carousel} from "~/components/Carousel";
 import {InputsHeader} from "~/components/InputsHeader";
 import {useEffect, useState} from "react";
-import {TEST_WEATHER_RESPONSE, TIMES_OF_DAYS} from "~/constants";
+import {DEFAULT_CITY, TIMES_OF_DAYS} from "~/constants";
 import {getDateAdjustedToApiTimezone} from "~/utils/date_utils";
 import type TimeOfDay from "~/TimeOfDay";
 
 const cardsPerPage = 2 // this may be dynamically shrunken to 1 based on the viewport size
 
-export function Welcome() {
+export function Welcome({initialApiResponse}: {initialApiResponse: object}) {
     const [cardsDetails, setCardsDetails] = useState<CardDetails[]>([])
-    const [location, setLocation] = useState<string>("New York, NY")
+    const [location, setLocation] = useState<string>(DEFAULT_CITY)
     const [dayOfWeek, setDayOfWeek] = useState<string>("0")
     const [timeOfDayIdxStr, setTimeOfDayIdxStr] = useState<string>("0")
     const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>(TIMES_OF_DAYS[0])
+    const [initialRequestIsDone, setInitialRequestIsDone] = useState<boolean>(false)
 
     function setTimeOfDayIdxStrHelper(s: string) {
         setTimeOfDayIdxStr(s)
@@ -27,6 +28,7 @@ export function Welcome() {
     }
 
     function processApiResponse(json: ApiResponse) {
+        console.log("json = ", json)
         const daysArr = json?.days
         if (!daysArr?.length) {
             setCardsDetails([])
@@ -53,6 +55,20 @@ export function Welcome() {
                 return
             }
 
+            if (!hours) {
+                newCardsDetails.push({
+                    conditions: day.conditions,
+                    icon: day.icon,
+                    temp: Math.round(day.temp),
+                    windspeed: Math.round(day.windspeed),
+                    rain: day.precipprob === 0 ? "No rain" : `${Math.round(day.precipprob)}% rain`,
+                    dateStr: datetime,
+                    tzoffset: tzoffset,
+                    hoursGraphDataPoints: []
+                })
+                return
+            }
+
             /**
              We need to calculate the "characteristic" traits of the time of the day the user has selected - these
              are the traits we display;
@@ -68,7 +84,7 @@ export function Welcome() {
              * conditions e.g. "Overcast"
              * icon e.g. "cloudy"
             */
-            const filteredPrimeTimeHourObjects: ApiResponseHourEntry[] = hours.filter(hourObj => timeOfDay.isHourObjPartOfPrimeTime(hourObj))
+            const filteredPrimeTimeHourObjects: ApiResponseHourEntry[] = hours.filter(hourObj => timeOfDay.isHourObjPartOfPrimeTime(hourObj));
             // const filteredHourObjects: ApiResponseHourEntry[] = hours.filter(hourObj => timeOfDayWeCareAbout.isHourObjPartOfTimeOfDay(hourObj))
             const filteredHourObjects: HourGraphDataPoint[] = []
             for (const hourObj of hours) {
@@ -148,12 +164,31 @@ export function Welcome() {
         setCardsDetails(newCardsDetails)
     }
 
+    function queryApi() {
+        (async () => {
+            // const res = await fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/" +
+            //     "timeline/West%20New%20York%2C%20nj/2025-03-14/2025-04-04?unitGroup=us&elements=datetime%2CdatetimeEpoch%2Cname%2CresolvedAddress%2Ctemp%2Cprecipprob%2Cwindspeed%2Cwindspeedmean%2Cconditions%2Cicon&key=SU4XR55XXRG44QREHFJPVAWT8&contentType=json");
+            const res = await fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/" +
+                "timeline/West%20New%20York%2C%20nj/2025-03-14/2025-04-04?unitGroup=us&elements=datetime%2Ctemp%2Cprecipprob%2Cwindspeed%2Cconditions%2Cicon&key=SU4XR55XXRG44QREHFJPVAWT8&contentType=json");
+            processApiResponse(await res.json())
+        })();
+    }
+
     useEffect(() => {
-        processApiResponse(TEST_WEATHER_RESPONSE)
+        queryApi()
+        setInitialRequestIsDone(true)
+    }, [])
+
+    useEffect(() => {
+        // processApiResponse(TEST_WEATHER_RESPONSE)
+        if (initialRequestIsDone)
+            queryApi()
     }, [dayOfWeek])
 
     useEffect(() => {
-        processApiResponse(TEST_WEATHER_RESPONSE)
+        // processApiResponse(TEST_WEATHER_RESPONSE)
+        if (initialRequestIsDone)
+            queryApi()
     }, [timeOfDay])
 
     return (<Container maxWidth={false} sx={{overflow: "scroll", minWidth: 500}}>

@@ -27,6 +27,11 @@ type ApiResponseHourEntry = {
 
 type ApiResponseDayEntry = {
     datetime: string,
+    temp: number,
+    precipprob: number,
+    windspeed: number,
+    conditions: string,
+    icon: string,
     hours: ApiResponseHourEntry[]
 }
 
