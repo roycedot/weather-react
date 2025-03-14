@@ -1,4 +1,6 @@
 type CardDetails = {
     conditions: string,
-    temp: number
+    temp: number,
+    winds: string,
+    rain: string,
 }

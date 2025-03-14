@@ -1,8 +1,9 @@
 import React, {useState, useEffect} from "react";
-import {Box, IconButton, Slide, Stack} from '@mui/material'
+import {Box, IconButton, Slide, Stack, useTheme} from '@mui/material'
 import {NavigateBefore as NavigateBeforeIcon, NavigateNext as NavigateNextIcon} from '@mui/icons-material'
 import {WeatherCard} from "~/components/WeatherCard";
 import useWindowDimensions from "~/utils/window_utils";
+import {CARD_HEIGHT} from "~/constants";
 
 export function Carousel({cardsPerPage, cardsDetails}: {cardsPerPage: number, cardsDetails: CardDetails[]}) {
     const [cards, setCards] = useState<React.ReactElement[]>([])
@@ -14,6 +15,7 @@ export function Carousel({cardsPerPage, cardsDetails}: {cardsPerPage: number, ca
     const [slideDirection, setSlideDirection] = useState<"right" | "left" | undefined>("left")
 
     const { windowHeight, windowWidth } = useWindowDimensions();
+    const theme = useTheme();
 
     const onNextPageClick = () => {
         if (!cards || index === cards.length - 1)
@@ -31,7 +33,7 @@ export function Carousel({cardsPerPage, cardsDetails}: {cardsPerPage: number, ca
 
     const checkNumPagesVsWindowSize = (numCards: number) => {
         let newCardsPerPageCalc: number = 1
-        if (windowWidth && windowWidth > 840)
+        if (windowWidth && windowWidth >= theme.breakpoints.values.md)
             newCardsPerPageCalc = cardsPerPage
 
         setCardsPerPageCalc(newCardsPerPageCalc)
@@ -46,8 +48,7 @@ export function Carousel({cardsPerPage, cardsDetails}: {cardsPerPage: number, ca
     useEffect(() => {
         const newCards = cardsDetails.map((x, idx) => <WeatherCard
             keyStr={`card-${idx}`}
-            conditions={x.conditions}
-            temp={x.temp}
+            cardDetails={x}
         />)
         setCards(newCards);
 
@@ -71,19 +72,19 @@ export function Carousel({cardsPerPage, cardsDetails}: {cardsPerPage: number, ca
                 alignContent: "center",
                 justifyContent: "center",
                 width: "100%",
-                height: 400,
+                height: CARD_HEIGHT,
                 overflow: "visible",
                 minWidth: 500
             }}
         >
+
             <IconButton onClick={onPrevPageClick} sx={{padding: 5, width: "10%", minWidth: 20}} disabled={index === 0}>
                 <NavigateBeforeIcon/>
             </IconButton>
+
             <Box
                 sx={{
-                    width: "80%",
-                    minWidth: 400,
-                    height: "100%",
+                    width: "100%",
                     display: 'flex',
                     flexDirection: "row",
                     alignItems: "center",
@@ -91,6 +92,8 @@ export function Carousel({cardsPerPage, cardsDetails}: {cardsPerPage: number, ca
                     justifyContent: "center",
                     overflow: "hidden",
                     flexWrap: "nowrap",
+                    borderTop: "1px solid black",
+                    paddingTop: "30px"
                 }}
             >
                 {[...Array(totalPages)].map((el, i) => (

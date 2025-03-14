@@ -1,28 +1,29 @@
 import {Box, Card, CardContent, Typography} from "@mui/material";
+import {CARD_HEIGHT} from "~/constants";
 
-export function WeatherCard({conditions, temp, keyStr}: { conditions: string, temp: number, keyStr: string}) {
+export function WeatherCard({keyStr, cardDetails}: { keyStr: string, cardDetails: CardDetails}) {
     return (
         <Box key={keyStr} sx={{ width: "100%" }}>
-            <Card sx={{ width: 400, height: 400 }} variant="outlined">
+            <Card sx={{ width: 400, height: CARD_HEIGHT, boxShadow: 0 }}>
                 <CardContent>
-                    <Typography variant="h6" component="div">
+                    <Typography variant="h6" component="div" sx={{textAlign: 'center'}}>
                         This Friday the 15th
                     </Typography>
-                    <Box sx={{display: 'flex', flexDirection: 'row'}}>
+                    <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'center'}}>
                         <Box>
                             <Typography variant="subtitle1">
-                                {conditions} {temp}&deg;F
+                                {cardDetails.conditions} {cardDetails.temp}&deg;F
                             </Typography>
                         </Box>
                         <Box>
                             <Typography variant="subtitle1">
-                                {conditions} {temp}&deg;F
+                                {cardDetails.conditions} {cardDetails.temp}&deg;F
                             </Typography>
                             <Typography variant="body2">
-                                Winds 8mph
+                                Winds {cardDetails.winds}
                             </Typography>
                             <Typography variant="body2">
-                                No rain
+                                {cardDetails.rain}
                             </Typography>
                         </Box>
                     </Box>

@@ -1,3 +1,5 @@
+export const CARD_HEIGHT = 700
+
 export const TEST_WEATHER_RESPONSE = {
     "queryCost": 1,
     "latitude": 40.7883,
