@@ -4,6 +4,10 @@ export const CARD_WIDTH = 425
 export const CARD_HEIGHT = 700
 
 export const DEFAULT_CITY = "New York, NY"
+// API only returns hourly forecasts up to 14 days in advance, it looks like, but we can
+// get a forecast for the day 21 days in advance - this is mostly so we can populate the
+// slider for the Next/Prev buttons to be available
+export const NUM_DAYS_WEATHER_LOOK_AHEAD = 21
 
 export const DAYS_OF_WEEK = [
     "Sunday",

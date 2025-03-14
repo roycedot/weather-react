@@ -3,7 +3,7 @@ import {ResponsiveAppBar} from "~/components/ResponsiveAppBar";
 import {Carousel} from "~/components/Carousel";
 import {InputsHeader} from "~/components/InputsHeader";
 import {useEffect, useState} from "react";
-import {DEFAULT_CITY, TIMES_OF_DAYS} from "~/constants";
+import {DEFAULT_CITY, NUM_DAYS_WEATHER_LOOK_AHEAD, TIMES_OF_DAYS} from "~/constants";
 import {getDateAdjustedToApiTimezone} from "~/utils/date_utils";
 import type TimeOfDay from "~/TimeOfDay";
 
@@ -16,6 +16,12 @@ export function Welcome({initialApiResponse}: {initialApiResponse: object}) {
     const [timeOfDayIdxStr, setTimeOfDayIdxStr] = useState<string>("0")
     const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>(TIMES_OF_DAYS[0])
     const [initialRequestIsDone, setInitialRequestIsDone] = useState<boolean>(false)
+
+    function setLocationHelper(s: string) {
+        // when user presses Enter on location text field
+        setLocation(s)
+        queryApi(s)
+    }
 
     function setTimeOfDayIdxStrHelper(s: string) {
         setTimeOfDayIdxStr(s)
@@ -164,12 +170,23 @@ export function Welcome({initialApiResponse}: {initialApiResponse: object}) {
         setCardsDetails(newCardsDetails)
     }
 
-    function queryApi() {
+    function queryApi(locationOverride: string | null = null) {
         (async () => {
-            // const res = await fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/" +
-            //     "timeline/West%20New%20York%2C%20nj/2025-03-14/2025-04-04?unitGroup=us&elements=datetime%2CdatetimeEpoch%2Cname%2CresolvedAddress%2Ctemp%2Cprecipprob%2Cwindspeed%2Cwindspeedmean%2Cconditions%2Cicon&key=SU4XR55XXRG44QREHFJPVAWT8&contentType=json");
+            const now = new Date()
+            const start_date_str = now.toISOString().split('T')[0]
+
+            const end_date = new Date(now.getTime() + (NUM_DAYS_WEATHER_LOOK_AHEAD * 24 * 60 * 60 * 1000))
+            const end_date_str = end_date.toISOString().split('T')[0]
+
+            let locationQuery
+            if (locationOverride) {
+                locationQuery = locationOverride
+            } else {
+                locationQuery = location
+            }
+
             const res = await fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/" +
-                "timeline/West%20New%20York%2C%20nj/2025-03-14/2025-04-04?unitGroup=us&elements=datetime%2Ctemp%2Cprecipprob%2Cwindspeed%2Cconditions%2Cicon&key=SU4XR55XXRG44QREHFJPVAWT8&contentType=json");
+                "timeline/" + encodeURIComponent(locationQuery) + "/" + start_date_str + "/" + end_date_str + "?unitGroup=us&elements=datetime%2Ctemp%2Cprecipprob%2Cwindspeed%2Cconditions%2Cicon&key=SU4XR55XXRG44QREHFJPVAWT8&contentType=json");
             processApiResponse(await res.json())
         })();
     }
@@ -195,7 +212,7 @@ export function Welcome({initialApiResponse}: {initialApiResponse: object}) {
         <ResponsiveAppBar/>
         <InputsHeader
             location={location}
-            setLocation={setLocation}
+            setLocation={setLocationHelper}
             dayOfWeek={dayOfWeek}
             setDayOfWeek={setDayOfWeek}
             timeOfDayIdxStr={timeOfDayIdxStr}

@@ -7,14 +7,16 @@
 npx create-react-router@latest project-folder-name
 ```
 - the API call requests 4 weeks of data - only the next 2 weeks have hourly breakdowns from the API, which we need to properly give a forecast for a section of the day (Morning, Afternoon, Evening).
-  - As a result, the 3rd and 4th week tiles do not show graphs. They have no graphs and are there just to show the Next/Prev button behavior
+  - As a result, the 3rd week tiles do not show graphs (I'm requesting 21 days in advance). They have no graphs and are there just to show the Next/Prev button behavior
 - the API call(s) could be optimized depending on expected end-user behavior
   - initially, if we know the user has loaded a viewport that only shows one tile, we could lazy load any other tiles e.g. when the user presses Next or expands the width of the browser
   - add infinite scrolling - if the data set was able to return a lot of tiles worth of data, we would need to load more data as the user presses Next
-- I added a Submit button on the location text even though this was not on the design - the alternatives would have been:
+- User must press Enter on the location text to make the location update - the alternatives would have been:
   - a request on every letter types - wasteful and a lot of garbage would probably be returned before the user finished typing what she wanted to
   - auto-suggest drop-down based on what's typed - complex
 - the weather icons were sourced from https://github.com/visualcrossing/WeatherIcons
+- the Slide animation when pressing Next/Prev looks a bit odd
+- I didn't add loader animations i.e. when the query is running
 
 
 - Tested on:

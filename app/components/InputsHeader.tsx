@@ -1,14 +1,16 @@
 import {Box, MenuItem, Select, type SelectChangeEvent, TextField} from "@mui/material";
 import {LocationOn as MapRoundedIcon, Schedule as ScheduleIcon} from '@mui/icons-material'
 import {TIMES_OF_DAYS} from "~/constants";
+import type {KeyboardEventHandler} from "react";
 
 export function InputsHeader({location, setLocation, dayOfWeek, setDayOfWeek, timeOfDayIdxStr, setTimeOfDayIdxStr} : {location: string, setLocation: (s: string) => void, dayOfWeek: string, setDayOfWeek: (s: string) => void, timeOfDayIdxStr: string, setTimeOfDayIdxStr: (s: string) => void}) {
     // const [location, setLocation] = useState<string>("New York, NY")
     // const [dayOfWeek, setDayOfWeek] = useState<string>("0")
     // const [timeOfDay, setTimeOfDay] = useState<string>("0")
 
-    const onLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setLocation(e.target.value)
+    const onLocationKeyDown: KeyboardEventHandler<HTMLDivElement> = (e) => {
+        if (e.key === "Enter" && e.target instanceof HTMLInputElement)
+            setLocation(e.target.value)
     }
 
     const handleDayOfWeekChange = (e: SelectChangeEvent) => {
@@ -30,7 +32,7 @@ export function InputsHeader({location, setLocation, dayOfWeek, setDayOfWeek, ti
         <Box sx={{display: 'flex', flexDirection: 'row', width: "816px", margin: "auto"}}>
             <Box sx={{display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'center', lineHeight: "60px", height: "60px", alignItems: "center"}}>
                 <MapRoundedIcon sx={{color: "black", marginRight: "2px"}}/>
-                <TextField id="location" label={""} variant={"standard"} defaultValue={location} sx={{width: "240px"}} onChange={onLocationChange}/>
+                <TextField id="location" label={""} variant={"standard"} defaultValue={location} sx={{width: "240px"}} onKeyDown={onLocationKeyDown}/>
             </Box>
             <Box sx={{display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'center', lineHeight: "60px", height: "60px", alignItems: "center"}}>
                 <ScheduleIcon sx={{color: "black", marginRight: "2px", height: "20px"}}/>
