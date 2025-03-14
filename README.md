@@ -21,6 +21,7 @@ npx create-react-router@latest project-folder-name
   - MacOS Sequoia 15.3.1
     - Chrome 133.0.6943.127
     - Safari 18.3
+- Didn't test on browser with/handle situation where JavaScript is disabled
 
 ## Getting Started
 

@@ -5,37 +5,28 @@ import {InputsHeader} from "~/components/InputsHeader";
 import {useEffect, useState} from "react";
 import {TEST_WEATHER_RESPONSE, TIMES_OF_DAYS} from "~/constants";
 import {getDateAdjustedToApiTimezone} from "~/utils/date_utils";
+import type TimeOfDay from "~/TimeOfDay";
 
 const cardsPerPage = 2 // this may be dynamically shrunken to 1 based on the viewport size
-// const cardsDetailsConst: CardDetails[] = [
-//     {
-//         conditions: "Clear",
-//         temp: 54.5,
-//         winds: "10mph",
-//         rain: "No rain",
-//         icon: "cloudy",
-//         dateStr: "2025-03-14 04:00",
-//         tzoffset: -4,
-//     },
-//     {
-//         conditions: "Rainy",
-//         temp: 50.5,
-//         winds: "8mph",
-//         rain: "No rain",
-//         icon: "cloudy",
-//         dateStr: "2025-03-21 04:00",
-//         tzoffset: -4,
-//     },
-// ]
 
 export function Welcome() {
     const [cardsDetails, setCardsDetails] = useState<CardDetails[]>([])
     const [location, setLocation] = useState<string>("New York, NY")
     const [dayOfWeek, setDayOfWeek] = useState<string>("0")
-    const [timeOfDay, setTimeOfDay] = useState<string>("0")
+    const [timeOfDayIdxStr, setTimeOfDayIdxStr] = useState<string>("0")
+    const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>(TIMES_OF_DAYS[0])
+
+    function setTimeOfDayIdxStrHelper(s: string) {
+        setTimeOfDayIdxStr(s)
+        setTimeOfDayFromIdxStr(s)
+    }
+
+    function setTimeOfDayFromIdxStr(idx: string) {
+        const timeOfDayIdx = Number(idx)
+        setTimeOfDay(TIMES_OF_DAYS[timeOfDayIdx])
+    }
 
     function processApiResponse(json: ApiResponse) {
-        // setCardsDetails(cardsDetailsConst)
         const daysArr = json?.days
         if (!daysArr?.length) {
             setCardsDetails([])
@@ -47,6 +38,12 @@ export function Welcome() {
 
         const dayOfWeekWeCareAbout = Number(dayOfWeek)
 
+        if (!timeOfDay) {
+            // shouldn't happen
+            alert("Error: Time Of Day is not set")
+            return
+        }
+
         daysArr.forEach((day) => {
             const {datetime, hours} = day
             // datetime is a string like "2025-03-21"
@@ -55,9 +52,6 @@ export function Welcome() {
             if (date.getDay() !== dayOfWeekWeCareAbout) {
                 return
             }
-
-            const timeOfDayIdx = Number(timeOfDay)
-            const timeOfDayWeCareAbout = TIMES_OF_DAYS[timeOfDayIdx]
 
             /**
              We need to calculate the "characteristic" traits of the time of the day the user has selected - these
@@ -74,11 +68,11 @@ export function Welcome() {
              * conditions e.g. "Overcast"
              * icon e.g. "cloudy"
             */
-            const filteredPrimeTimeHourObjects: ApiResponseHourEntry[] = hours.filter(hourObj => timeOfDayWeCareAbout.isHourObjPartOfPrimeTime(hourObj))
+            const filteredPrimeTimeHourObjects: ApiResponseHourEntry[] = hours.filter(hourObj => timeOfDay.isHourObjPartOfPrimeTime(hourObj))
             // const filteredHourObjects: ApiResponseHourEntry[] = hours.filter(hourObj => timeOfDayWeCareAbout.isHourObjPartOfTimeOfDay(hourObj))
             const filteredHourObjects: HourGraphDataPoint[] = []
             for (const hourObj of hours) {
-                if (timeOfDayWeCareAbout.isHourObjPartOfTimeOfDay(hourObj)) {
+                if (timeOfDay.isHourObjPartOfTimeOfDay(hourObj)) {
                     filteredHourObjects.push({
                         temp: hourObj.temp,
                         precipprob: hourObj.precipprob,
@@ -86,16 +80,41 @@ export function Welcome() {
                     })
                 }
             }
+            const avgTemp = filteredPrimeTimeHourObjects.reduce(
+                    (x, hourObj) => x + hourObj.temp, 0
+                ) / filteredPrimeTimeHourObjects.length
+            const avgWind = filteredPrimeTimeHourObjects.reduce(
+                    (x, hourObj) => x + hourObj.windspeed, 0
+                ) / filteredPrimeTimeHourObjects.length
+            const avgChanceOfPrecip = filteredPrimeTimeHourObjects.reduce(
+                    (x, hourObj) => x + hourObj.precipprob, 0
+                ) / filteredPrimeTimeHourObjects.length
+
+            newCardsDetails.push({
+                conditions: "Clear",
+                temp: Math.round(avgTemp),
+                winds: `${Math.round(avgWind)} mph`,
+                rain: avgChanceOfPrecip === 0 ? "No rain" : `${Math.round(avgChanceOfPrecip)}% rain`,
+                icon: "cloudy",
+                dateStr: datetime,
+                tzoffset: tzoffset,
+                hoursGraphDataPoints: filteredHourObjects
+            })
+
             // console.log("hours=", hours)
             // console.log("filteredPrimeTimeHourObjects=", filteredPrimeTimeHourObjects)
             // console.log("filteredHourObjects=", filteredHourObjects)
-        })
+        });
         setCardsDetails(newCardsDetails)
     }
 
     useEffect(() => {
         processApiResponse(TEST_WEATHER_RESPONSE)
-    }, [])
+    }, [dayOfWeek])
+
+    useEffect(() => {
+        processApiResponse(TEST_WEATHER_RESPONSE)
+    }, [timeOfDay])
 
     return (<Container maxWidth={false} sx={{overflow: "scroll", minWidth: 500}}>
         <ResponsiveAppBar/>
@@ -104,8 +123,8 @@ export function Welcome() {
             setLocation={setLocation}
             dayOfWeek={dayOfWeek}
             setDayOfWeek={setDayOfWeek}
-            timeOfDay={timeOfDay}
-            setTimeOfDay={setTimeOfDay}
+            timeOfDayIdxStr={timeOfDayIdxStr}
+            setTimeOfDayIdxStr={setTimeOfDayIdxStrHelper}
         />
         {cardsDetails?.length && <Carousel
             cardsPerPage={cardsPerPage}

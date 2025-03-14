@@ -2,7 +2,7 @@ import {Box, MenuItem, Select, type SelectChangeEvent, TextField} from "@mui/mat
 import {LocationOn as MapRoundedIcon, Schedule as ScheduleIcon} from '@mui/icons-material'
 import {TIMES_OF_DAYS} from "~/constants";
 
-export function InputsHeader({location, setLocation, dayOfWeek, setDayOfWeek, timeOfDay, setTimeOfDay} : {location: string, setLocation: (s: string) => void, dayOfWeek: string, setDayOfWeek: (s: string) => void, timeOfDay: string, setTimeOfDay: (s: string) => void}) {
+export function InputsHeader({location, setLocation, dayOfWeek, setDayOfWeek, timeOfDayIdxStr, setTimeOfDayIdxStr} : {location: string, setLocation: (s: string) => void, dayOfWeek: string, setDayOfWeek: (s: string) => void, timeOfDayIdxStr: string, setTimeOfDayIdxStr: (s: string) => void}) {
     // const [location, setLocation] = useState<string>("New York, NY")
     // const [dayOfWeek, setDayOfWeek] = useState<string>("0")
     // const [timeOfDay, setTimeOfDay] = useState<string>("0")
@@ -16,7 +16,7 @@ export function InputsHeader({location, setLocation, dayOfWeek, setDayOfWeek, ti
     }
 
     const handleTimeOfDayChange = (e: SelectChangeEvent) => {
-        setTimeOfDay(e.target.value)
+        setTimeOfDayIdxStr(e.target.value)
     }
 
     return (<Box
@@ -50,7 +50,7 @@ export function InputsHeader({location, setLocation, dayOfWeek, setDayOfWeek, ti
                     <MenuItem value={6}>Every Saturday</MenuItem>
                 </Select>
                 <Select
-                    value={timeOfDay}
+                    value={timeOfDayIdxStr}
                     onChange={handleTimeOfDayChange}
                     sx={{
                         width: "150px"

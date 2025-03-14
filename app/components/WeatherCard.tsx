@@ -12,21 +12,25 @@ export function WeatherCard({keyStr, cardDetails}: { keyStr: string, cardDetails
                         {getDisplayStrForDate(cardDetails.dateStr)}
                     </Typography>
                     <Box sx={{display: 'flex', flexDirection: 'row', justifyContent: 'center', marginBottom: "20px"}}>
-                        <Box>
+                        <Box sx={{paddingRight: "4px"}}>
                             <Typography variant="subtitle1">
-                                <img src={`${cardDetails.icon}.png`} style={{marginRight: "4px"}}/>
+                                <img src={`${cardDetails.icon}.png`}/>
                             </Typography>
                         </Box>
-                        <Box>
+                        <Box sx={{paddingLeft: "4px"}}>
                             <Typography variant="subtitle1">
                                 {cardDetails.conditions} {cardDetails.temp}&deg;F
                             </Typography>
-                            <Typography variant="body2">
-                                Winds {cardDetails.winds}
-                            </Typography>
-                            <Typography variant="body2">
-                                {cardDetails.rain}
-                            </Typography>
+                            <Box sx={{display: 'flex', flexDirection: 'row'}}>
+                                <Typography variant="body2">
+                                    Winds {cardDetails.winds}
+                                </Typography>
+                            </Box>
+                            <Box sx={{display: 'flex', flexDirection: 'row'}}>
+                                <Typography variant="body2">
+                                    {cardDetails.rain}
+                                </Typography>
+                            </Box>
                         </Box>
                     </Box>
 
