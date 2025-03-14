@@ -31,11 +31,11 @@ export function getDisplayStrForDate(date_str: string) : string {
     return `${dayOfWeek} the ${dayOfMonthStr}`;
 }
 
-function getDateAdjustedToApiTimezone(date_str: string, offset: number) : Date {
+export function getDateAdjustedToApiTimezone(date_str: string, offset: number) : Date {
     // trying to avoid importing a date library just so we can handle timezones
     const date = new Date(date_str)
 
-    return new Date(date.getTime() + (offset * 60 * 60 * 1000))
+    return new Date(date.getTime() - (offset * 60 * 60 * 1000))
 }
 
 function addOrdinalSuffix(number: number) : string {

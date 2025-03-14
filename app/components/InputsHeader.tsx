@@ -1,12 +1,11 @@
 import {Box, MenuItem, Select, type SelectChangeEvent, TextField} from "@mui/material";
 import {LocationOn as MapRoundedIcon, Schedule as ScheduleIcon} from '@mui/icons-material'
-import {useState} from "react";
 import {TIMES_OF_DAYS} from "~/constants";
 
-export function InputsHeader() {
-    const [location, setLocation] = useState<string>("New York, NY")
-    const [dayOfWeek, setDayOfWeek] = useState<string>("0")
-    const [timeOfDay, setTimeOfDay] = useState<string>("0")
+export function InputsHeader({location, setLocation, dayOfWeek, setDayOfWeek, timeOfDay, setTimeOfDay} : {location: string, setLocation: (s: string) => void, dayOfWeek: string, setDayOfWeek: (s: string) => void, timeOfDay: string, setTimeOfDay: (s: string) => void}) {
+    // const [location, setLocation] = useState<string>("New York, NY")
+    // const [dayOfWeek, setDayOfWeek] = useState<string>("0")
+    // const [timeOfDay, setTimeOfDay] = useState<string>("0")
 
     const onLocationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setLocation(e.target.value)
