@@ -90,22 +90,60 @@ export function Welcome() {
                     (x, hourObj) => x + hourObj.precipprob, 0
                 ) / filteredPrimeTimeHourObjects.length
 
-            newCardsDetails.push({
-                conditions: "Clear",
-                temp: Math.round(avgTemp),
-                windspeed: Math.round(avgWind),
-                rain: avgChanceOfPrecip === 0 ? "No rain" : `${Math.round(avgChanceOfPrecip)}% rain`,
-                icon: "cloudy",
-                dateStr: datetime,
-                tzoffset: tzoffset,
-                hoursGraphDataPoints: filteredHourObjects
-            })
-
             // console.log("hours=", hours)
             // console.log("filteredPrimeTimeHourObjects=", filteredPrimeTimeHourObjects)
             // console.log("filteredHourObjects=", filteredHourObjects)
             // console.log("timeOfDay=", timeOfDay.xAxisLabels)
-            // console.log("cardDetails.hoursGraphDataPoints.map(x => x.temp)=", filteredHourObjects.map(x => x.temp))
+
+            const conditionsCounts: object = {}
+            const iconsCounts: object = {}
+            for (const hourObj of filteredPrimeTimeHourObjects) {
+                // @ts-ignore
+                if (conditionsCounts[hourObj.conditions]) {
+                    // @ts-ignore
+                    conditionsCounts[hourObj.conditions] += 1
+                } else {
+                    // @ts-ignore
+                    conditionsCounts[hourObj.conditions] = 1
+                }
+                // @ts-ignore
+                if (iconsCounts[hourObj.icon]) {
+                    // @ts-ignore
+                    iconsCounts[hourObj.icon] += 1
+                } else {
+                    // @ts-ignore
+                    iconsCounts[hourObj.icon] = 1
+                }
+            }
+
+            let maxCountCondition = 0, maxCountIcon = 0, maxCondition = "", maxIcon = ""
+            for (const condition in conditionsCounts) {
+                // @ts-ignore
+                if (conditionsCounts[condition] > maxCountCondition) {
+                    maxCondition = condition
+                    // @ts-ignore
+                    maxCountCondition = conditionsCounts[condition]
+                }
+            }
+            for (const icon in iconsCounts) {
+                // @ts-ignore
+                if (iconsCounts[icon] > maxCountIcon) {
+                    maxIcon = icon
+                    // @ts-ignore
+                    maxCountIcon = iconsCounts[icon]
+                }
+            }
+
+            newCardsDetails.push({
+                conditions: maxCondition,
+                icon: maxIcon,
+                temp: Math.round(avgTemp),
+                windspeed: Math.round(avgWind),
+                rain: avgChanceOfPrecip === 0 ? "No rain" : `${Math.round(avgChanceOfPrecip)}% rain`,
+                dateStr: datetime,
+                tzoffset: tzoffset,
+                hoursGraphDataPoints: filteredHourObjects
+            })
         });
         setCardsDetails(newCardsDetails)
     }
