@@ -17,9 +17,12 @@ npx create-react-router@latest project-folder-name
 - the weather icons were sourced from https://github.com/visualcrossing/WeatherIcons
 - the Slide animation when pressing Next/Prev looks a bit odd
 - I didn't add loader animations i.e. when the query is running
+- I messed up using the latest libraries (React Router v7 and MUI v6) - there was some work required to get a production build working because of ESM support lacking in MUI v6. I had to go to v7 beta.
+- this was built with SSR support and the API call should be done through the server, but I can see the request in Requests tab of the browser. A server-side request to the API would help obfuscate the API key.
 
 
 - Tested on:
+  - Node v20.11.1
   - MacOS Sequoia 15.3.1
     - Chrome 133.0.6943.127
     - Safari 18.3
