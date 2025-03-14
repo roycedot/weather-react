@@ -185,9 +185,17 @@ export function Welcome({initialApiResponse}: {initialApiResponse: object}) {
                 locationQuery = location
             }
 
-            const res = await fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/" +
-                "timeline/" + encodeURIComponent(locationQuery) + "/" + start_date_str + "/" + end_date_str + "?unitGroup=us&elements=datetime%2Ctemp%2Cprecipprob%2Cwindspeed%2Cconditions%2Cicon&key=SU4XR55XXRG44QREHFJPVAWT8&contentType=json");
-            processApiResponse(await res.json())
+            try {
+                const res = await fetch("https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/" +
+                    "timeline/" + encodeURIComponent(locationQuery) + "/" + start_date_str + "/" + end_date_str + "?unitGroup=us&elements=datetime%2Ctemp%2Cprecipprob%2Cwindspeed%2Cconditions%2Cicon&key=SU4XR55XXRG44QREHFJPVAWT8&contentType=json");
+                if (res.ok) {
+                    processApiResponse(await res.json());
+                } else {
+                    alert("Error querying API: " + res.status.toString())
+                }
+            } catch (error) {
+                alert("Error querying API: " + error)
+            }
         })();
         // processApiResponse(TEST_WEATHER_RESPONSE)
     }
