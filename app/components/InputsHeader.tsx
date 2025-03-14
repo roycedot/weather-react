@@ -26,15 +26,15 @@ export function InputsHeader({location, setLocation, dayOfWeek, setDayOfWeek, ti
             width: "100%",
             marginTop: {sm: 5, md: 10},
             marginBottom: {sm: "10px", md: "8px"},
-            height: {sm: "120px", md: "80px"},
+            height: {sm: "140px", md: "80px"},
         }}
     >
-        <Box sx={{display: 'flex', flexDirection: 'row', width: "816px", margin: "auto"}}>
-            <Box sx={{display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'center', lineHeight: "60px", height: "60px", alignItems: "center"}}>
+        <Box sx={{display: 'flex', width: {md: "816px", sm: "600px"}, margin: "auto", flexWrap: "wrap"}}>
+            <Box sx={{display: 'flex', flex: 1, flexDirection: 'row', justifyContent: {md: 'center', sm: 'flex-start'}, lineHeight: "60px", height: "60px", alignItems: "center"}}>
                 <MapRoundedIcon sx={{color: "black", marginRight: "2px"}}/>
                 <TextField id="location" label={""} variant={"standard"} defaultValue={location} sx={{width: "240px"}} onKeyDown={onLocationKeyDown}/>
             </Box>
-            <Box sx={{display: 'flex', flex: 1, flexDirection: 'row', justifyContent: 'center', lineHeight: "60px", height: "60px", alignItems: "center"}}>
+            <Box sx={{display: 'flex', flex: 1, flexDirection: 'row', justifyContent: {md: 'center', sm: 'flex-start'}, lineHeight: "60px", height: "60px", alignItems: "center"}}>
                 <ScheduleIcon sx={{color: "black", marginRight: "2px", height: "20px"}}/>
                 <Select
                     value={dayOfWeek}

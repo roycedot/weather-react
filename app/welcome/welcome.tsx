@@ -189,6 +189,7 @@ export function Welcome({initialApiResponse}: {initialApiResponse: object}) {
                 "timeline/" + encodeURIComponent(locationQuery) + "/" + start_date_str + "/" + end_date_str + "?unitGroup=us&elements=datetime%2Ctemp%2Cprecipprob%2Cwindspeed%2Cconditions%2Cicon&key=SU4XR55XXRG44QREHFJPVAWT8&contentType=json");
             processApiResponse(await res.json())
         })();
+        // processApiResponse(TEST_WEATHER_RESPONSE)
     }
 
     useEffect(() => {
@@ -197,13 +198,11 @@ export function Welcome({initialApiResponse}: {initialApiResponse: object}) {
     }, [])
 
     useEffect(() => {
-        // processApiResponse(TEST_WEATHER_RESPONSE)
         if (initialRequestIsDone)
             queryApi()
     }, [dayOfWeek])
 
     useEffect(() => {
-        // processApiResponse(TEST_WEATHER_RESPONSE)
         if (initialRequestIsDone)
             queryApi()
     }, [timeOfDay])
