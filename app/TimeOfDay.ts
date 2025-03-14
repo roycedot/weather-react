@@ -4,7 +4,9 @@ class TimeOfDay {
     end_hour_primetime: number
     start_hour: number // start of x-axis on graph - 2 hours ahead of start_hour_primetime
     end_hour: number // start of x-axis on graph - 2 hours after end_hour_primetime
-    x_axis_labels: string[]
+    // MUI X Charts doesn't support text x axis items :( or I need to dig deeper
+    // x_axis_labels: string[]
+    x_axis_labels: number[]
 
     constructor(name: string, start_hour_primetime: number, end_hour_primetime: number) {
         this.name = name
@@ -19,9 +21,19 @@ class TimeOfDay {
 
         this.x_axis_labels = []
 
-        for (let i = this.start_hour; i < this.end_hour; ++i) {
-            this.x_axis_labels.push(`${i}:00`)
+        for (let i = this.start_hour; i <= this.end_hour; ++i) {
+            // MUI X Charts doesn't support text x axis items :( or I need to dig deeper
+            // this.x_axis_labels.push(`${i}:00`)
+            this.x_axis_labels.push(i)
         }
+    }
+
+    // MUI X Charts doesn't support text x axis items :( or I need to dig deeper
+    // get xAxisLabels(): string[] {
+    //     return this.x_axis_labels
+    // }
+    get xAxisLabels(): number[] {
+        return this.x_axis_labels
     }
 
     isHourObjPartOfPrimeTime(hourObj: ApiResponseHourEntry): boolean {
@@ -29,7 +41,7 @@ class TimeOfDay {
         if (hourFirstPart === undefined) {
             return false
         }
-        return (hourFirstPart >= this.start_hour_primetime && hourFirstPart <= this.end_hour_primetime)
+        return (hourFirstPart >= this.start_hour_primetime && hourFirstPart < this.end_hour_primetime)
     }
 
     isHourObjPartOfTimeOfDay(hourObj: ApiResponseHourEntry): boolean {

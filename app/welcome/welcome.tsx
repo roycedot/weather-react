@@ -93,7 +93,7 @@ export function Welcome() {
             newCardsDetails.push({
                 conditions: "Clear",
                 temp: Math.round(avgTemp),
-                winds: `${Math.round(avgWind)} mph`,
+                windspeed: Math.round(avgWind),
                 rain: avgChanceOfPrecip === 0 ? "No rain" : `${Math.round(avgChanceOfPrecip)}% rain`,
                 icon: "cloudy",
                 dateStr: datetime,
@@ -104,6 +104,8 @@ export function Welcome() {
             // console.log("hours=", hours)
             // console.log("filteredPrimeTimeHourObjects=", filteredPrimeTimeHourObjects)
             // console.log("filteredHourObjects=", filteredHourObjects)
+            // console.log("timeOfDay=", timeOfDay.xAxisLabels)
+            // console.log("cardDetails.hoursGraphDataPoints.map(x => x.temp)=", filteredHourObjects.map(x => x.temp))
         });
         setCardsDetails(newCardsDetails)
     }
@@ -129,6 +131,7 @@ export function Welcome() {
         {cardsDetails?.length && <Carousel
             cardsPerPage={cardsPerPage}
             cardsDetails={cardsDetails}
+            timeOfDay={timeOfDay}
         />}
         {cardsDetails.length === 0 && <Box
             sx={{

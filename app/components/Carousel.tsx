@@ -4,8 +4,9 @@ import {NavigateBefore as NavigateBeforeIcon, NavigateNext as NavigateNextIcon} 
 import {WeatherCard} from "~/components/WeatherCard";
 import useWindowDimensions from "~/utils/window_utils";
 import {CARD_HEIGHT} from "~/constants";
+import type TimeOfDay from "~/TimeOfDay";
 
-export function Carousel({cardsPerPage, cardsDetails}: {cardsPerPage: number, cardsDetails: CardDetails[]}) {
+export function Carousel({cardsPerPage, cardsDetails, timeOfDay}: {cardsPerPage: number, cardsDetails: CardDetails[], timeOfDay: TimeOfDay}) {
     const [cards, setCards] = useState<React.ReactElement[]>([])
     const [cardsWasInitialized, setCardsWasInitialized] = useState<boolean>(false)
     const [index, setIndex] = useState(0)
@@ -49,6 +50,7 @@ export function Carousel({cardsPerPage, cardsDetails}: {cardsPerPage: number, ca
         const newCards = cardsDetails.map((x, idx) => <WeatherCard
             keyStr={`card-${idx}`}
             cardDetails={x}
+            timeOfDay={timeOfDay}
         />)
         setCards(newCards);
 

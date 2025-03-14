@@ -8,7 +8,7 @@ type HourGraphDataPoint = {
 type CardDetails = {
     conditions: string,
     temp: number,
-    winds: string,
+    windspeed: number,
     rain: string,
     icon: string,
     dateStr: string,

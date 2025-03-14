@@ -1,9 +1,11 @@
 import {Box, Card, CardContent, Typography} from "@mui/material";
 import {CARD_HEIGHT, CARD_WIDTH} from "~/constants";
-import {LineChart} from "@mui/x-charts";
+import {Air as AirIcon, WaterDropOutlined as WaterDropIcon} from "@mui/icons-material"
+import {ChartsReferenceLine, LineChart} from "@mui/x-charts";
 import {getDisplayStrForDate} from "~/utils/date_utils";
+import type TimeOfDay from "~/TimeOfDay";
 
-export function WeatherCard({keyStr, cardDetails}: { keyStr: string, cardDetails: CardDetails}) {
+export function WeatherCard({keyStr, cardDetails, timeOfDay}: { keyStr: string, cardDetails: CardDetails, timeOfDay: TimeOfDay}) {
     return (
         <Box key={keyStr} sx={{ width: "100%" }}>
             <Card sx={{ width: CARD_WIDTH, height: CARD_HEIGHT, boxShadow: 0 }}>
@@ -21,12 +23,14 @@ export function WeatherCard({keyStr, cardDetails}: { keyStr: string, cardDetails
                             <Typography variant="subtitle1">
                                 {cardDetails.conditions} {cardDetails.temp}&deg;F
                             </Typography>
-                            <Box sx={{display: 'flex', flexDirection: 'row'}}>
+                            <Box sx={{display: 'flex', flexDirection: 'row', height: "20px", lineHeight: "20px"}}>
+                                <AirIcon sx={{height: "18px"}}/>
                                 <Typography variant="body2">
-                                    Winds {cardDetails.winds}
+                                    Winds {`${Math.round(cardDetails.windspeed)} mph`}
                                 </Typography>
                             </Box>
-                            <Box sx={{display: 'flex', flexDirection: 'row'}}>
+                            <Box sx={{display: 'flex', flexDirection: 'row', height: "20px", lineHeight: "20px"}}>
+                                <WaterDropIcon sx={{height: "18px"}}/>
                                 <Typography variant="body2">
                                     {cardDetails.rain}
                                 </Typography>
@@ -34,25 +38,26 @@ export function WeatherCard({keyStr, cardDetails}: { keyStr: string, cardDetails
                         </Box>
                     </Box>
 
+
                     <LineChart
-                        xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+                        xAxis={[{ data: timeOfDay.xAxisLabels, label: "Hour (24h format)" }]}
                         yAxis={[
                             {id: "tempOrRainChance", label: "°F / Rain %"},
                             {id: "windMph", label: "Wind MPH"},
                         ]}
                         series={[
                             {
-                                data: [2, 5.5, 2, 8.5, 1.5, 5],
+                                data: cardDetails.hoursGraphDataPoints.map(x => x.temp),
                                 yAxisId: "tempOrRainChance",
                                 label: "Temp"
                             },
                             {
-                                data: [12, 15.5, 21, 18.5, 11.5, 15],
+                                data: cardDetails.hoursGraphDataPoints.map(x => x.precipprob),
                                 yAxisId: "tempOrRainChance",
                                 label: "Rain %"
                             },
                             {
-                                data: [2, 3, 2, 5, 3, 2],
+                                data: cardDetails.hoursGraphDataPoints.map(x => x.windspeed),
                                 yAxisId: "windMph",
                                 label: "Wind"
                             },
@@ -61,7 +66,16 @@ export function WeatherCard({keyStr, cardDetails}: { keyStr: string, cardDetails
                         rightAxis={"windMph"}
                         width={CARD_WIDTH - 20}
                         height={500}
-                    />
+                    >
+                        <ChartsReferenceLine
+                            x={timeOfDay.start_hour_primetime}
+                            lineStyle={{ strokeDasharray: '10 5' }}
+                        />
+                        <ChartsReferenceLine
+                            x={timeOfDay.end_hour_primetime}
+                            lineStyle={{ strokeDasharray: '10 5' }}
+                        />
+                    </LineChart>
                 </CardContent>
             </Card>
         </Box>
