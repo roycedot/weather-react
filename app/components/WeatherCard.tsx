@@ -1,8 +1,8 @@
 import {Box, Card, CardContent, Typography} from "@mui/material";
 
-export function WeatherCard({conditions, temp}: { conditions: string | undefined, temp: number | undefined}) {
+export function WeatherCard({conditions, temp, keyStr}: { conditions: string, temp: number, keyStr: string}) {
     return (
-        <Box sx={{ width: "100%" }}>
+        <Box key={keyStr} sx={{ width: "100%" }}>
             <Card sx={{ width: 400, height: 400 }} variant="outlined">
                 <CardContent>
                     <Typography variant="h6" component="div">

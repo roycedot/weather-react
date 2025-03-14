@@ -31,7 +31,7 @@ const cardsDetails: CardDetails[] = [
 ]
 
 export function Welcome() {
-    return (<Container maxWidth={false}>
+    return (<Container maxWidth={false} sx={{overflow: "scroll", minWidth: 500}}>
         <ResponsiveAppBar/>
         <Carousel
             cardsPerPage={cardsPerPage}
